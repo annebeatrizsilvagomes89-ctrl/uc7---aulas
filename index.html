@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Closet - Protótipo Mobile Hi-Fi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #1a1a1a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .phone-frame {
+      width: 375px;
+      height: 760px;
+      background-color: #FDFBF7;
+      border-radius: 44px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      border: 10px solid #2d2d2d;
+      position: relative;
+      overflow: hidden;
+      color: #3D3835;
+    }
+    .screen {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      padding-bottom: 75px;
+    }
+    .screen.active {
+      display: block;
+    }
+    .notch {
+      width: 130px;
+      height: 24px;
+      background-color: #2d2d2d;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+  <!-- DISPOSITIVO MOBILE -->
+  <div class="phone-frame flex flex-col justify-between">
+    <div class="notch"></div>
+
+    <!-- NOTIFICAÇÃO TOAST DA MICROINTERAÇÃO -->
+    <div id="toast" class="fixed top-8 left-1/2 transform -translate-x-1/2 bg-[#704E38] text-white text-xs px-4 py-2 rounded-full shadow-lg transition-all duration-300 opacity-0 pointer-events-none z-50">
+      Atualizado!
+    </div>
+
+    <!-- CONTEÚDO DAS TELAS -->
+    <div class="pt-8 px-4 flex-1">
+
+      <!-- 0. TELA DE ENTRADA (LOGIN / CADASTRO) -->
+      <div id="screen-auth" class="screen active">
+        <div class="flex flex-col items-center justify-center h-full pt-2 pb-6">
+          
+          <!-- Logo / Banner -->
+          <div class="w-16 h-16 rounded-2xl bg-[#704E38] text-white flex items-center justify-center text-2xl shadow-md mb-3">
+            <i class="fa-solid fa-shirt"></i>
+          </div>
+          <h1 class="text-2xl font-serif font-bold text-[#3D3835]">My Closet</h1>
+          <p class="text-xs text-gray-500 mb-5 text-center">Organize o seu guarda-roupa com estilo e praticidade.</p>
+
+          <!-- Abas Login / Cadastro -->
+          <div class="w-full bg-[#EFE9E1] p-1 rounded-xl flex mb-4">
+            <button type="button" id="tab-login-btn" onclick="switchAuthTab('login')" class="w-1/2 py-2 text-xs font-bold rounded-lg bg-[#704E38] text-white shadow-sm transition">Entrar</button>
+            <button type="button" id="tab-signup-btn" onclick="switchAuthTab('signup')" class="w-1/2 py-2 text-xs font-bold rounded-lg text-gray-600 transition">Criar Conta</button>
+          </div>
+
+          <!-- Formulário de Login -->
+          <div id="form-login" class="w-full space-y-3">
+            <div>
+              <label class="text-xs font-bold text-gray-600">E-mail</label>
+              <input type="text" value="sophia@email.com" class="w-full mt-1 p-2.5 text-xs rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-[#704E38]">
+            </div>
+            <div>
+              <label class="text-xs font-bold text-gray-600">Palavra-passe</label>
+              <input type="password" value="12345678" class="w-full mt-1 p-2.5 text-xs rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-[#704E38]">
+            </div>
+            <button type="button" onclick="enterApp('Login realizado!')" class="w-full py-3 bg-[#704E38] text-white text-xs font-bold rounded-xl shadow-md active:scale-95 transition mt-2 cursor-pointer">
+              Entrar no My Closet
+            </button>
+          </div>
+
+          <!-- Formulário de Cadastro -->
+          <div id="form-signup" class="w-full space-y-3 hidden">
+            <div>
+              <label class="text-xs font-bold text-gray-600">Nome Completo</label>
+              <input type="text" placeholder="Sophia Santos" class="w-full mt-1 p-2.5 text-xs rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-[#704E38]">
+            </div>
+            <div>
+              <label class="text-xs font-bold text-gray-600">E-mail</label>
+              <input type="text" placeholder="sophia@email.com" class="w-full mt-1 p-2.5 text-xs rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-[#704E38]">
+            </div>
+            <div>
+              <label class="text-xs font-bold text-gray-600">Palavra-passe</label>
+              <input type="password" placeholder="••••••••" class="w-full mt-1 p-2.5 text-xs rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-[#704E38]">
+            </div>
+            <button type="button" onclick="enterApp('Conta criada!')" class="w-full py-3 bg-[#704E38] text-white text-xs font-bold rounded-xl shadow-md active:scale-95 transition mt-2 cursor-pointer">
+              Criar Minha Conta
+            </button>
+          </div>
+
+          <!-- BOTÃO DIRETO DE ENTRADA (GARANTIA DE NAVEGAÇÃO) -->
+          <button type="button" onclick="enterApp('Bem-vindo!')" class="mt-4 text-xs font-bold text-[#704E38] underline cursor-pointer">
+            Entrar direto como visitante &rarr;
+          </button>
+
+        </div>
+      </div>
+
+      <!-- 1. TELA: MEU CLOSET -->
+      <div id="screen-closet" class="screen">
+        <div class="flex justify-between items-center mt-2 mb-3">
+          <div>
+            <p class="text-[10px] tracking-widest text-[#704E38] font-bold uppercase">Minha Coleção</p>
+            <h1 class="text-2xl font-serif font-bold text-[#3D3835]">Meu Armário</h1>
+          </div>
+          <button type="button" onclick="switchScreen('add')" class="w-10 h-10 rounded-full bg-[#704E38] text-white flex items-center justify-center shadow-md active:scale-95 transition">
+            <i class="fa-solid fa-plus text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Filtro de Categorias -->
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none" id="categories-bar">
+          <button type="button" onclick="filterCategory('Todos')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium bg-[#704E38] text-white shadow-sm">Todos</button>
+          <button type="button" onclick="filterCategory('Blusas')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium bg-[#EFE9E1] text-[#3D3835]">Blusas</button>
+          <button type="button" onclick="filterCategory('Calças')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium bg-[#EFE9E1] text-[#3D3835]">Calças</button>
+          <button type="button" onclick="filterCategory('Casacos')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium bg-[#EFE9E1] text-[#3D3835]">Casacos</button>
+          <button type="button" onclick="filterCategory('Vestidos')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium bg-[#EFE9E1] text-[#3D3835]">Vestidos</button>
+        </div>
+
+        <!-- Grid de Peças -->
+        <div class="grid grid-cols-2 gap-3" id="clothes-grid"></div>
+      </div>
+
+      <!-- 2. TELA: ADICIONAR PEÇA -->
+      <div id="screen-add" class="screen">
+        <div class="flex items-center gap-3 mt-2 mb-4">
+          <button type="button" onclick="switchScreen('closet')" class="text-gray-600"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+          <h1 class="text-xl font-serif font-bold">Adicionar Peça</h1>
+        </div>
+
+        <div class="border-2 border-dashed border-gray-300 rounded-2xl p-6 text-center bg-white mb-4 cursor-pointer relative min-h-[130px] flex flex-col items-center justify-center" onclick="document.getElementById('file-input').click()">
+          <i class="fa-solid fa-image text-3xl text-gray-400 mb-2"></i>
+          <p class="text-xs font-semibold text-gray-700">Carregar foto dos Arquivos</p>
+          <p class="text-[10px] text-gray-400">Toque para selecionar da galeria</p>
+          <input type="file" id="file-input" class="hidden" accept="image/*" onchange="previewImage(event)">
+          <img id="image-preview" class="absolute inset-0 w-full h-full object-cover rounded-2xl hidden">
+        </div>
+
+        <form onsubmit="handleAddItem(event)" class="space-y-3">
+          <div>
+            <label class="text-xs font-bold text-gray-600">Nome da Peça</label>
+            <input type="text" id="item-name" required placeholder="Ex: Camisa Linho Branca" class="w-full mt-1 p-2.5 text-xs rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-[#704E38]">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-xs font-bold text-gray-600">Categoria</label>
+              <select id="item-cat" class="w-full mt-1 p-2.5 text-xs rounded-xl border border-gray-200 bg-white">
+                <option>Blusas</option>
+                <option>Calças</option>
+                <option>Casacos</option>
+                <option>Vestidos</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs font-bold text-gray-600">Preço (R\$)</label>
+              <input type="number" id="item-price" required placeholder="150" class="w-full mt-1 p-2.5 text-xs rounded-xl border border-gray-200 bg-white">
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-gray-600">Cor Predominante</label>
+            <input type="text" id="item-color" placeholder="Ex: Bege / Branco" class="w-full mt-1 p-2.5 text-xs rounded-xl border border-gray-200 bg-white">
+          </div>
+          <button type="submit" class="w-full py-3 bg-[#704E38] text-white text-xs font-bold rounded-xl shadow-md active:scale-95 transition mt-2">Salvar no Armário</button>
+        </form>
+      </div>
+
+      <!-- 3. TELA: CRIAR LOOK -->
+      <div id="screen-look" class="screen">
+        <p class="text-[10px] tracking-widest text-[#704E38] font-bold uppercase mt-2">Estilo</p>
+        <h1 class="text-2xl font-serif font-bold mb-4">Criar Look</h1>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm text-center border border-gray-100 mb-4">
+          <div class="w-10 h-10 rounded-full bg-[#FDFBF7] mx-auto flex items-center justify-center text-[#704E38] mb-2">
+            <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+          </div>
+          <h3 class="text-xs font-bold text-gray-800">Gerador Inteligente</h3>
+          <p class="text-[10px] text-gray-500 mb-3">Sorteie diversas opções de combinações do seu closet.</p>
+          <button type="button" onclick="generateMultipleLooks()" class="w-full py-2.5 bg-[#704E38] text-white text-xs font-bold rounded-xl active:scale-95 transition">Gerar Sugestões de Looks</button>
+        </div>
+
+        <div id="generated-looks-container" class="space-y-4 pb-2"></div>
+      </div>
+
+      <!-- 4. TELA: MALA DE VIAGEM -->
+      <div id="screen-mala" class="screen">
+        <p class="text-[10px] tracking-widest text-[#704E38] font-bold uppercase mt-2">Planejador</p>
+        <h1 class="text-2xl font-serif font-bold mb-4">Mala de Viagem</h1>
+
+        <div class="bg-[#704E38] text-white p-4 rounded-2xl mb-4 shadow-md">
+          <span class="text-[9px] uppercase bg-white/20 px-2 py-0.5 rounded-md font-bold">Próxima Viagem</span>
+          <h2 class="text-lg font-serif font-bold mt-1">Fim de Semana em Búzios</h2>
+          <p class="text-[11px] text-white/80">14 Out - 17 Out • 3 Noites</p>
+        </div>
+
+        <h3 class="text-xs font-bold text-gray-700 mb-2">Checklist da Mala</h3>
+        <div id="mala-checklist" class="space-y-2 mb-4"></div>
+
+        <button type="button" onclick="addMalaItemPrompt()" class="w-full py-3 border-2 border-dashed border-[#704E38] text-[#704E38] text-xs font-bold rounded-2xl flex items-center justify-center gap-2 active:bg-gray-100">
+          <i class="fa-solid fa-plus"></i> Adicionar Item à Mala
+        </button>
+      </div>
+
+      <!-- 5. TELA: ESTATÍSTICAS -->
+      <div id="screen-stats" class="screen">
+        <p class="text-[10px] tracking-widest text-[#704E38] font-bold uppercase mt-2">Métricas</p>
+        <h1 class="text-2xl font-serif font-bold mb-4">Estatísticas</h1>
+
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+            <p class="text-[10px] text-gray-400 font-bold uppercase">Total de Peças</p>
+            <p id="stat-total" class="text-2xl font-bold text-[#3D3835]">4</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+            <p class="text-[10px] text-gray-400 font-bold uppercase">Custo Médio/Uso</p>
+            <p id="stat-cost" class="text-2xl font-bold text-[#704E38]">R\$ 18</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <p class="text-xs font-bold text-gray-700 mb-3">Cores Mais Utilizadas</p>
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span>Tons Terrosos & Nude</span>
+                <span class="font-bold">55%</span>
+              </div>
+              <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-[#704E38] h-full w-[55%]"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span>Branco & Neutros</span>
+                <span class="font-bold">30%</span>
+              </div>
+              <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-[#DBC8BD] h-full w-[30%]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. TELA: PERFIL -->
+      <div id="screen-profile" class="screen">
+        <div class="text-center mt-4 mb-6">
+          <img id="profile-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="w-20 h-20 rounded-full mx-auto object-cover border-2 border-[#704E38] shadow-md mb-2">
+          <h2 class="font-serif font-bold text-lg">Sophia Santos</h2>
+          <p class="text-xs text-gray-500">Estilo Minimalista Elegante</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-2 shadow-sm border border-gray-100 space-y-1">
+          <button type="button" onclick="showToast('Preferências atualizadas!')" class="w-full p-3 text-left text-xs font-semibold text-gray-700 flex justify-between items-center hover:bg-gray-50 rounded-xl">
+            <span>Preferências de Estilo</span>
+            <i class="fa-solid fa-chevron-right text-gray-400 text-[10px]"></i>
+          </button>
+          <button type="button" onclick="logout()" class="w-full p-3 text-left text-xs font-semibold text-red-600 flex justify-between items-center hover:bg-red-50 rounded-xl">
+            <span>Sair da Conta</span>
+            <i class="fa-solid fa-right-from-bracket text-red-400 text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MENU DE NAVEGAÇÃO INFERIOR -->
+    <div id="bottom-nav" class="hidden absolute bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-100 flex justify-around items-center px-2 z-40">
+      <button type="button" data-screen="closet" onclick="switchScreen('closet')" class="nav-btn text-[#704E38] flex flex-col items-center gap-1">
+        <i class="fa-solid fa-shirt text-base"></i>
+        <span class="text-[9px] font-bold">Meu Closet</span>
+      </button>
+      <button type="button" data-screen="look" onclick="switchScreen('look')" class="nav-btn text-gray-400 flex flex-col items-center gap-1">
+        <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+        <span class="text-[9px] font-bold">Criar Look</span>
+      </button>
+      <button type="button" data-screen="mala" onclick="switchScreen('mala')" class="nav-btn text-gray-400 flex flex-col items-center gap-1">
+        <i class="fa-solid fa-suitcase text-base"></i>
+        <span class="text-[9px] font-bold">Mala</span>
+      </button>
+      <button type="button" data-screen="stats" onclick="switchScreen('stats')" class="nav-btn text-gray-400 flex flex-col items-center gap-1">
+        <i class="fa-solid fa-chart-simple text-base"></i>
+        <span class="text-[9px] font-bold">Estatísticas</span>
+      </button>
+      <button type="button" data-screen="profile" onclick="switchScreen('profile')" class="nav-btn text-gray-400 flex flex-col items-center gap-1">
+        <i class="fa-solid fa-user text-base"></i>
+        <span class="text-[9px] font-bold">Perfil</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let items = [
+      { id: 1, name: "Blazer Linho Nude", cat: "Casacos", price: 29, uses: 12, img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=300", color: "Bege" },
+      { id: 2, name: "T-Shirt Algodão Pima", cat: "Blusas", price: 4, uses: 28, img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300", color: "Branco" },
+      { id: 3, name: "Calça Alfaiataria Cacau", cat: "Calças", price: 19, uses: 15, img: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300", color: "Marrom" },
+      { id: 4, name: "Vestido Midi Seda", cat: "Vestidos", price: 70, uses: 6, img: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300", color: "Terracota" }
+    ];
+
+    let malaItems = [
+      { name: "Blazer Linho Nude", checked: true },
+      { name: "T-Shirt Algodão Pima", checked: false },
+      { name: "Óculos de Sol Vintage", checked: true }
+    ];
+
+    function switchAuthTab(tab) {
+      const loginForm = document.getElementById('form-login');
+      const signupForm = document.getElementById('form-signup');
+      const loginBtn = document.getElementById('tab-login-btn');
+      const signupBtn = document.getElementById('tab-signup-btn');
+
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        loginBtn.classList.add('bg-[#704E38]', 'text-white');
+        loginBtn.classList.remove('text-gray-600');
+        signupBtn.classList.remove('bg-[#704E38]', 'text-white');
+        signupBtn.classList.add('text-gray-600');
+      } else {
+        signupForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+        signupBtn.classList.add('bg-[#704E38]', 'text-white');
+        signupBtn.classList.remove('text-gray-600');
+        loginBtn.classList.remove('bg-[#704E38]', 'text-white');
+        loginBtn.classList.add('text-gray-600');
+      }
+    }
+
+    // ENTRADA DIRETA NA APLICAÇÃO
+    function enterApp(msg) {
+      document.getElementById('screen-auth').classList.remove('active');
+      document.getElementById('screen-closet').classList.add('active');
+      document.getElementById('bottom-nav').classList.remove('hidden');
+      updateBottomNav('closet');
+      showToast(msg);
+    }
+
+    function logout() {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-auth').classList.add('active');
+      document.getElementById('bottom-nav').classList.add('hidden');
+      showToast('Sessão encerrada!');
+    }
+
+    function renderGrid(data) {
+      const grid = document.getElementById('clothes-grid');
+      grid.innerHTML = data.map(item => `
+        <div class="bg-white rounded-2xl p-2 shadow-sm border border-gray-100 relative group">
+          <span class="absolute top-3 right-3 bg-white/80 backdrop-blur-sm text-[9px] font-bold px-2 py-0.5 rounded-full text-gray-600">${item.uses}x uso</span>
+          <button type="button" onclick="deleteItem(${item.id})" class="absolute top-3 left-3 bg-red-500/80 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+          <img src="${item.img}" class="w-full h-32 object-cover rounded-xl mb-2">
+          <h4 class="text-xs font-bold text-gray-800 truncate">${item.name}</h4>
+          <div class="flex justify-between items-center mt-1">
+            <span class="text-[10px] text-gray-400">${item.color}</span>
+            <span class="text-[10px] font-bold text-[#704E38]">R$ ${item.price}/uso</span>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('stat-total').innerText = items.length;
+    }
+
+    function deleteItem(id) {
+      items = items.filter(i => i.id !== id);
+      renderGrid(items);
+      showToast("Peça removida!");
+    }
+
+    function renderMala() {
+      const list = document.getElementById('mala-checklist');
+      list.innerHTML = malaItems.map((item, idx) => `
+        <div onclick="toggleMalaItem(${idx})" class="bg-white p-3 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer">
+          <span class="text-xs font-medium ${item.checked ? 'line-through text-gray-400' : 'text-gray-700'}">${item.name}</span>
+          <div class="w-5 h-5 rounded-md flex items-center justify-center ${item.checked ? 'bg-[#704E38] text-white' : 'border border-gray-300'}">
+            ${item.checked ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleMalaItem(idx) {
+      malaItems[idx].checked = !malaItems[idx].checked;
+      renderMala();
+      showToast("Mala atualizada!");
+    }
+
+    function addMalaItemPrompt() {
+      const name = prompt("Digite o nome do item para a mala:");
+      if (name) {
+        malaItems.push({ name: name, checked: false });
+        renderMala();
+        showToast("Item adicionado!");
+      }
+    }
+
+    function filterCategory(cat) {
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('bg-[#704E38]', 'text-white');
+        btn.classList.add('bg-[#EFE9E1]', 'text-[#3D3835]');
+      });
+      if (window.event && window.event.target) {
+        window.event.target.classList.remove('bg-[#EFE9E1]', 'text-[#3D3835]');
+        window.event.target.classList.add('bg-[#704E38]', 'text-white');
+      }
+
+      if (cat === 'Todos') renderGrid(items);
+      else renderGrid(items.filter(i => i.cat === cat));
+    }
+
+    function updateBottomNav(activeScreenId) {
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const screen = btn.getAttribute('data-screen');
+        if (screen === activeScreenId) {
+          btn.classList.remove('text-gray-400');
+          btn.classList.add('text-[#704E38]');
+        } else {
+          btn.classList.remove('text-[#704E38]');
+          btn.classList.add('text-gray-400');
+        }
+      });
+    }
+
+    function switchScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const targetScreen = document.getElementById(`screen-${screenId}`);
+      if (targetScreen) targetScreen.classList.add('active');
+
+      const bottomNav = document.getElementById('bottom-nav');
+      if (screenId === 'auth') {
+        bottomNav.classList.add('hidden');
+      } else {
+        bottomNav.classList.remove('hidden');
+        updateBottomNav(screenId);
+      }
+
+      if (screenId === 'look') {
+        generateMultipleLooks();
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none'), 2000);
+    }
+
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('image-preview');
+          img.src = e.target.result;
+          img.classList.remove('hidden');
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleAddItem(e) {
+      if (e) e.preventDefault();
+      const name = document.getElementById('item-name').value;
+      const cat = document.getElementById('item-cat').value;
+      const price = document.getElementById('item-price').value;
+      const color = document.getElementById('item-color').value || "Neutro";
+      const img = document.getElementById('image-preview').src || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300";
+
+      items.unshift({ id: Date.now(), name, cat, price: Number(price), uses: 0, img, color });
+      renderGrid(items);
+      switchScreen('closet');
+      showToast("Peça adicionada!");
+    }
+
+    function generateMultipleLooks() {
+      const container = document.getElementById('generated-looks-container');
+      
+      const tops = items.filter(i => i.cat === 'Blusas' || i.cat === 'Casacos');
+      const bottoms = items.filter(i => i.cat === 'Calças' || i.cat === 'Vestidos');
+
+      const looks = [
+        { title: "Look Casual Chic", top: tops[0] || items[0], bottom: bottoms[0] || items[2], tag: "Trabalho / Dia a Dia" },
+        { title: "Look Verão Elegante", top: tops[1] || items[1], bottom: bottoms[1] || items[3], tag: "Passeio / Encontro" },
+        { title: "Look Sofisticado", top: tops[0] || items[0], bottom: bottoms[1] || items[3], tag: "Evento Noturno" }
+      ];
+
+      container.innerHTML = looks.map((look, index) => `
+        <div class="bg-[#EFE9E1] p-3.5 rounded-2xl space-y-2 border border-gray-200">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] font-bold text-[#704E38] uppercase tracking-wider">${look.title}</span>
+            <span class="text-[9px] bg-white px-2 py-0.5 rounded-full text-gray-500 font-semibold">${look.tag}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="flex items-center gap-2 bg-white p-2 rounded-xl">
+              <img src="${look.top.img}" class="w-10 h-10 object-cover rounded-lg">
+              <div class="overflow-hidden">
+                <p class="text-[11px] font-bold text-gray-800 truncate">${look.top.name}</p>
+                <p class="text-[9px] text-gray-400">Parte Cima</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 bg-white p-2 rounded-xl">
+              <img src="${look.bottom.img}" class="w-10 h-10 object-cover rounded-lg">
+              <div class="overflow-hidden">
+                <p class="text-[11px] font-bold text-gray-800 truncate">${look.bottom.name}</p>
+                <p class="text-[9px] text-gray-400">Parte Baixo</p>
+              </div>
+            </div>
+          </div>
+          <button type="button" onclick="showToast('Look #${index + 1} guardado!')" class="w-full py-1.5 bg-[#704E38] text-white text-[11px] font-bold rounded-lg active:scale-95 transition">Guardar este Look</button>
+        </div>
+      `).join('');
+
+      showToast("Novas sugestões geradas!");
+    }
+
+    renderGrid(items);
+    renderMala();
+  </script>
+</body>
+</html>
